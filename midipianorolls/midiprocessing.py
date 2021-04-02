@@ -659,7 +659,7 @@ class Pianoroll:
         self.setup(ax)
     
         
-        return self
+        return
     
     
     def subplot_pianoroll(self, *args, plot_title=''):
@@ -675,17 +675,17 @@ class Pianoroll:
             Writes a title in the pianoroll plot. Default ``''`` no title.
         """ 
         
-        fig, ax = plt.subplots(figsize=(20, 5))
+        fig, ax = plt.subplots(len(args), 1, figsize=(20, 2*len(args)))
                 
         plt.subplots_adjust(hspace=0.010)
 
         for i, arg in enumerate(args):
-            ax = fig.add_subplot(len(arg), 1, i+1)
+            ax = fig.add_subplot(i+1, 1, i+1)
             self.track_loop(arg, ax, COLOR[i+1], COLOR_EDGES[i+1])
             
             self.setup(ax)
 
-        return self
+        return
     
 
 def writemidtrack(notes_tuple):
