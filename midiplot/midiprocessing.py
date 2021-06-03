@@ -27,8 +27,8 @@ class MidiProcessing:
         
     Examples
     --------     
-    >>> import wavaimidiz
-    >>> midi = wavaimidiz.MidiProcessing('midi.mid')
+    >>> import midiplot
+    >>> midi = midiplot.MidiProcessing('midi.mid')
     >>> midi.print_tracks()  
     >>> tuple = midi.get_notestuple_of_singletrack_by_nprogram(program_number=9)
     >>> tuple2 = midi.get_notestuple_of_singletrack_by_name(track_name='drums')
@@ -278,9 +278,9 @@ class MidiProcessing:
                     change_ant = changes_bar
                
             else:
-                ValueError: 'bar inserted is not correct.'
+                raise ValueError('bar inserted is not correct.')
                 
-            if print_n_bars == True:
+            if print_n_bars:
                 print('MIDI file has:', n_bars, 'bars')
                 
             return changes_array, bpm_array, n_bars_per_change_bpm, changes_bars, n_bars 
@@ -454,6 +454,38 @@ class MidiProcessing:
             
         return notes_tuple
     
+    
+    def get_all_tracks(self):
+    
+        """This function ...
+        
+        Parameters
+        ----------         
+        track_name : np.ndarray
+            Name of the track.                    
+                       
+        Returns
+        -------
+        data : dict
+            name, program number and notes tuple of all tracks in the MIDI file.  
+        """
+        
+        data_prev = {}
+        for i in range(len(self.midi_file.instruments)):
+            
+            data = {
+                    i :
+                            {
+                            "instrument"    :   self.midi_file.instruments[i].name,
+                            "n_program"     :   self.midi_file.instruments[i].program,
+                            "notes"         :   self.get_notestuple_of_singletrack_by_nprogram(self.midi_file.instruments[i].program)
+                            }
+                    }
+            
+            data_prev = {**data_prev, **data}
+   
+        return data_prev
+    
     """
     def combine_tracks(self, *args):
         
@@ -585,8 +617,6 @@ class Pianoroll:
                                             alpha = 0.5,
                                             edgecolor = COLOR_EDGES,
                                             facecolor = COLOR))
-                
-        return 
     
     
     def plot_singletrack_pianoroll(self, notes_tuple, bpm=120, 
@@ -621,8 +651,8 @@ class Pianoroll:
             
         elif axis == 'bar':
             duration = notes_tuple[2][-1]
-            n_bars = duration*bpm / (int(bar[0])*60)
-            time_1_bar = duration / n_bars
+            n_bars = duration*60 / (int(bar[0])*bpm)
+            time_1_bar = (60 / bpm) * int(bar[0])
              
             self.setup(ax, axis=axis)
             
@@ -632,7 +662,6 @@ class Pianoroll:
             self.track_loop(notes_tuple, ax, COLOR[0], COLOR_EDGES[0], 
                             axis=axis, time_1_bar = time_1_bar)
             
-        return 
     
     
     def overlap_multitrack_pianorolls(self, *argv, plot_title=''):
@@ -658,10 +687,20 @@ class Pianoroll:
             
         self.setup(ax)
     
+    
+    def plot_all_tracks(self, tracks_dict, axis='time', time_1_bar=None, bar='4/4', plot_title=''):
         
-        return
-    
-    
+        fig, ax = plt.subplots(figsize=(20, 5))
+        
+        if plot_title != '':
+            plt.title(plot_title)
+        
+        for key in tracks_dict.keys():
+            self.track_loop(tracks_dict[key]["notes"], ax, COLOR[key+1], COLOR_EDGES[key+1],
+                            axis=axis, time_1_bar=time_1_bar)
+        self.setup(ax)
+        
+        
     def subplot_pianoroll(self, *args, plot_title=''):
     
         """This function plots the pinoroll of single tracks in different

@@ -10,10 +10,10 @@ def read(fname):
 
 requirements = read('requirements.txt').splitlines()
 
-setuptools.setup(name='wavaimidiz',
+setuptools.setup(name='midiplot',
       version='0.0',
       description='Python mono Wav to MIDI transcription and analysis',
-      url='https://github.com/carlosholivan/wavAImidiZ',
+      url='https://github.com/carlosholivan/midiplot',
       author='Carlos Hernandez Olivan',
       author_email='carloshero@unizar.es',
       license='Apache License, Version 2.0',
