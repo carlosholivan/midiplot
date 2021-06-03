@@ -33,7 +33,7 @@ var/
 *.egg
 
 # Sphinx documentation
-doc/
+#doc/
 
 #Checkpoints
 tutorials/.ipynb_checkpoints
