@@ -1,0 +1,808 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>midiplot package &#8212; midiplot beta.0 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">midiplot beta.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">midiplot package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="midiplot-package">
+<h1>midiplot package<a class="headerlink" href="#midiplot-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-midiplot.midiprocessing">
+<span id="midiplot-midiprocessing-module"></span><h2>midiplot.midiprocessing module<a class="headerlink" href="#module-midiplot.midiprocessing" title="Permalink to this headline">¶</a></h2>
+<p>This file provides MIDI handling tools.</p>
+<dl class="py class">
+<dt id="midiplot.midiprocessing.MidiProcessing">
+<em class="property">class </em><code class="sig-prename descclassname">midiplot.midiprocessing.</code><code class="sig-name descname">MidiProcessing</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">midi_path</span></em><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.midiprocessing.MidiProcessing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class presents some functions to process and extract data from a
+MIDI file with <code class="docutils literal notranslate"><span class="pre">pretty_midi</span></code> library.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>midi_path</strong> (<em>str</em><em> or </em><em>file</em>) – Path or file pointer to a MIDI file.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="midiplot.midiprocessing.MidiProcessing.midi_file">
+<code class="sig-name descname">midi_file</code><a class="headerlink" href="#midiplot.midiprocessing.MidiProcessing.midi_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pretty MIDI attribute</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>pretty_midi.pretty_midi.PrettyMIDI</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">midiplot</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">midi</span> <span class="o">=</span> <span class="n">midiplot</span><span class="o">.</span><span class="n">MidiProcessing</span><span class="p">(</span><span class="s1">&#39;midi.mid&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">midi</span><span class="o">.</span><span class="n">print_tracks</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">tuple</span> <span class="o">=</span> <span class="n">midi</span><span class="o">.</span><span class="n">get_notestuple_of_singletrack_by_nprogram</span><span class="p">(</span><span class="n">program_number</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tuple2</span> <span class="o">=</span> <span class="n">midi</span><span class="o">.</span><span class="n">get_notestuple_of_singletrack_by_name</span><span class="p">(</span><span class="n">track_name</span><span class="o">=</span><span class="s1">&#39;drums&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt id="midiplot.midiprocessing.MidiProcessing.cut_initial_silence">
+<code class="sig-name descname">cut_initial_silence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tuple_notes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">select_track_by</span><span class="o">=</span><span class="default_value">'track_name'</span></em>, <em class="sig-param"><span class="n">track_n</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">program_name</span><span class="o">=</span><span class="default_value">'drums'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.midiprocessing.MidiProcessing.cut_initial_silence" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function cuts the initial silence of a track. The initial
+silence is the silence between time 0 and the first note of the MIDI
+file taking into account all the MIDI tracks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tuple_notes</strong> (<em>tuple of</em><em> [</em><em>np.ndarray</em><em>, </em><em>np.ndarray</em><em>, </em><em>np.ndarray</em><em>]</em>) – Tuple of pitch, onsets and offsets times in seconds.
+If we have a tuple_notes we can cut it even if it does not belong
+to the input MIDI file. Default <code class="docutils literal notranslate"><span class="pre">None</span></code> which means that a track
+of the MIDI file will be selected to be cut.</p></li>
+<li><p><strong>select_track_by</strong> (<em>str</em>) – <code class="docutils literal notranslate"><span class="pre">track_name</span></code> selects the track by its name.
+<code class="docutils literal notranslate"><span class="pre">program_number</span></code> selects the track by its program number.</p></li>
+<li><p><strong>track_n</strong> (<em>int</em>) – Numer of the track to cut if select_track_by = <code class="docutils literal notranslate"><span class="pre">program_number</span></code>.</p></li>
+<li><p><strong>program_name</strong> (<em>str</em>) – Name of the track to cut if select_track_by = <code class="docutils literal notranslate"><span class="pre">track_name</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>tuples</strong> – Tuple of pitch, onsets and offsets times in seconds.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple of [np.ndarray, np.ndarray, np.ndarray]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="midiplot.midiprocessing.MidiProcessing.cut_midi_bars">
+<code class="sig-name descname">cut_midi_bars</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">start_bar</span></em>, <em class="sig-param"><span class="n">end_bar</span></em>, <em class="sig-param"><span class="n">bpm</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tuple_notes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">select_track_by</span><span class="o">=</span><span class="default_value">'track_name'</span></em>, <em class="sig-param"><span class="n">track_n</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">program_name</span><span class="o">=</span><span class="default_value">'drums'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.midiprocessing.MidiProcessing.cut_midi_bars" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function cuts the duration of a track by selecting the
+starting bar and the ending bar. The MIDI file is not quantized so
+the bars values will vary between this bar values and a DAW.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_bar</strong> (<em>int</em>) – Desired starting bar.</p></li>
+<li><p><strong>end_bar</strong> (<em>int</em>) – Desired ending bar.</p></li>
+<li><p><strong>bpm</strong> (<em>int</em><em> or </em><em>float</em>) – Beats per minute. Default <code class="docutils literal notranslate"><span class="pre">120</span></code>.</p></li>
+<li><p><strong>tuple_notes</strong> (<em>tuple of</em><em> [</em><em>np.ndarray</em><em>, </em><em>np.ndarray</em><em>, </em><em>np.ndarray</em><em>]</em>) – Tuple of pitch, onsets and offsets times in seconds.
+If we have a tuple_notes we can cut it even if it does not belong
+to the input MIDI file. Default <code class="docutils literal notranslate"><span class="pre">None</span></code> which means that a track
+of the MIDI file will be selected to be cut.</p></li>
+<li><p><strong>select_track_by</strong> (<em>str</em>) – <code class="docutils literal notranslate"><span class="pre">track_name</span></code> selects the track by its name.
+<code class="docutils literal notranslate"><span class="pre">program_number</span></code> selects the track by its program number.</p></li>
+<li><p><strong>track_n</strong> (<em>int</em>) – Numer of the track to cut if select_track_by = <code class="docutils literal notranslate"><span class="pre">program_number</span></code>.</p></li>
+<li><p><strong>program_name</strong> (<em>str</em>) – Name of the track to cut if select_track_by = <code class="docutils literal notranslate"><span class="pre">track_name</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>tuples</strong> – Tuple of pitch, onsets and offsets times in seconds.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple of [np.ndarray, np.ndarray, np.ndarray]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="midiplot.midiprocessing.MidiProcessing.estimate_bpm">
+<code class="sig-name descname">estimate_bpm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">print_bpm</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.midiprocessing.MidiProcessing.estimate_bpm" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns the bpm estimation of a MIDI file using
+<code class="docutils literal notranslate"><span class="pre">pretty_midi</span></code> library.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>print_bpm</strong> (<em>bool</em>) – Prints the bpm value.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>bpm</strong> – Estimated bpm of the input MIDI file.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="midiplot.midiprocessing.MidiProcessing.get_all_tracks">
+<code class="sig-name descname">get_all_tracks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.midiprocessing.MidiProcessing.get_all_tracks" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function …</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>track_name</strong> (<em>np.ndarray</em>) – Name of the track.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>data</strong> – name, program number and notes tuple of all tracks in the MIDI file.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="midiplot.midiprocessing.MidiProcessing.get_bars">
+<code class="sig-name descname">get_bars</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bpm</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">bar</span><span class="o">=</span><span class="default_value">'4/4'</span></em>, <em class="sig-param"><span class="n">print_n_bars</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.midiprocessing.MidiProcessing.get_bars" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function calculates the total number of bars of the MIDI file
+with the total duration of the MIDI file, the bpm and the bar measure.
+The MIDI file is not quantized so the number of bars will vary between
+this bar values and a DAW.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bpm</strong> (<em>int</em><em> or </em><em>float</em>) – Beats per minute. Default <code class="docutils literal notranslate"><span class="pre">120</span></code>.</p></li>
+<li><p><strong>bar</strong> (<em>str</em>) – Bar measure <code class="docutils literal notranslate"><span class="pre">2/4</span></code>, <code class="docutils literal notranslate"><span class="pre">3/4</span></code> or <code class="docutils literal notranslate"><span class="pre">4/4</span></code>. Default <code class="docutils literal notranslate"><span class="pre">4/4</span></code>.</p></li>
+<li><p><strong>print_n_bars</strong> (<em>bool</em>) – print_time_per_bar = <code class="docutils literal notranslate"><span class="pre">True</span></code> prints the value of the number of
+bars.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>n_bars</strong> – Total number of bars.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="midiplot.midiprocessing.MidiProcessing.get_duration">
+<code class="sig-name descname">get_duration</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">print_duration</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.midiprocessing.MidiProcessing.get_duration" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns the duration of the MIDI file using
+<code class="docutils literal notranslate"><span class="pre">pretty_midi</span></code> library.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>print_duration</strong> (<em>bool</em>) – Prints the duration value in seconds.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>duration</strong> – Duration in seconds of the input MIDI file.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="midiplot.midiprocessing.MidiProcessing.get_notestuple_of_singletrack_by_name">
+<code class="sig-name descname">get_notestuple_of_singletrack_by_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">track_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.midiprocessing.MidiProcessing.get_notestuple_of_singletrack_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns the tuple_notes of a single track by passing
+to it the name of the track.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>track_name</strong> (<em>np.ndarray</em>) – Name of the track.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>notes_tuple</strong> – Tuple of pitch, onsets and offsets times in seconds.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple of [np.ndarray, np.ndarray, np.ndarray]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="midiplot.midiprocessing.MidiProcessing.get_notestuple_of_singletrack_by_nprogram">
+<code class="sig-name descname">get_notestuple_of_singletrack_by_nprogram</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program_number</span></em><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.midiprocessing.MidiProcessing.get_notestuple_of_singletrack_by_nprogram" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns the tuple_notes of a single track by passing
+to it the program number.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>program_number</strong> (<em>int</em>) – Program number of the track.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>notes_tuple</strong> – Tuple of pitch, onsets and offsets times in seconds.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple of [np.ndarray, np.ndarray, np.ndarray]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="midiplot.midiprocessing.MidiProcessing.get_tracks">
+<code class="sig-name descname">get_tracks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.midiprocessing.MidiProcessing.get_tracks" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function stores the MIDI tracks in a tuple of
+[track, program number, name, is_drum, notes_list].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>n_track_list</strong> (<em>list of ints</em>) – Numer of track in the MIDI file.</p></li>
+<li><p><strong>nprogram_list</strong> (<em>list of ints</em>) – Numbers of the MIDI programs for each instrument.</p></li>
+<li><p><strong>name_list</strong> (<em>list of strs</em>) – Names of the MIDI tracks.</p></li>
+<li><p><strong>isdrum_list</strong> (<em>list of bools</em>) – Is the instrument a drum instrument (channel 9)?</p></li>
+<li><p><strong>notes_list</strong> (<em>tuple of [np.ndarray, np.ndarray, np.ndarray]</em>) – Tuple of pitch, onsets and offsets times in seconds.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="midiplot.midiprocessing.MidiProcessing.print_tracks">
+<code class="sig-name descname">print_tracks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.midiprocessing.MidiProcessing.print_tracks" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function prints the track number, program number, track name
+and is_drum.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="midiplot.midiprocessing.Pianoroll">
+<em class="property">class </em><code class="sig-prename descclassname">midiplot.midiprocessing.</code><code class="sig-name descname">Pianoroll</code><a class="headerlink" href="#midiplot.midiprocessing.Pianoroll" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class presents a collection of functions to plot
+MIDI tracks pianorolls.</p>
+<dl class="py method">
+<dt id="midiplot.midiprocessing.Pianoroll.overlap_multitrack_pianorolls">
+<code class="sig-name descname">overlap_multitrack_pianorolls</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">argv</span></em>, <em class="sig-param"><span class="n">plot_title</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.midiprocessing.Pianoroll.overlap_multitrack_pianorolls" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function plots a multitrack pianoroll with each track in a
+different color.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*argv</strong> (<em>tuples of</em><em> [</em><em>np.ndarray</em><em>, </em><em>np.ndarray</em><em>, </em><em>np.ndarray</em><em>]</em>) – Tuples of pitch, onsets and offsets times in seconds.</p></li>
+<li><p><strong>plot_title</strong> (<em>str</em>) – Writes a title in the pianoroll plot. Default <code class="docutils literal notranslate"><span class="pre">''</span></code> no title.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="midiplot.midiprocessing.Pianoroll.plot_singletrack_pianoroll">
+<code class="sig-name descname">plot_singletrack_pianoroll</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">notes_tuple</span></em>, <em class="sig-param"><span class="n">bpm</span><span class="o">=</span><span class="default_value">120</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">'time'</span></em>, <em class="sig-param"><span class="n">bar</span><span class="o">=</span><span class="default_value">'4/4'</span></em>, <em class="sig-param"><span class="n">plot_title</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.midiprocessing.Pianoroll.plot_singletrack_pianoroll" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function plots a pianoroll of a single track.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>notes_tuple</strong> (<em>tuple of</em><em> [</em><em>np.ndarray</em><em>, </em><em>np.ndarray</em><em>, </em><em>np.ndarray</em><em>]</em>) – Tuple of pitch, onsets and offsets times in seconds.</p></li>
+<li><p><strong>bpm</strong> (<em>int</em><em> or </em><em>float</em>) – Beats per minute. Default <code class="docutils literal notranslate"><span class="pre">120</span></code>.</p></li>
+<li><p><strong>axis</strong> (<em>str</em>) – Change axis between <code class="docutils literal notranslate"><span class="pre">time</span></code> to plot time in seconds in the x axis
+or <code class="docutils literal notranslate"><span class="pre">bar</span></code> to plot the bars.</p></li>
+<li><p><strong>bar</strong> (<em>str</em>) – Bar measure <code class="docutils literal notranslate"><span class="pre">2/4</span></code>, <code class="docutils literal notranslate"><span class="pre">3/4</span></code> or <code class="docutils literal notranslate"><span class="pre">4/4</span></code>. Default <code class="docutils literal notranslate"><span class="pre">4/4</span></code>.</p></li>
+<li><p><strong>plot_title</strong> (<em>str</em>) – Writes a title in the pianoroll plot. Default <code class="docutils literal notranslate"><span class="pre">''</span></code> no title.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="midiplot.midiprocessing.Pianoroll.setup">
+<code class="sig-name descname">setup</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ax</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">'time'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.midiprocessing.Pianoroll.setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is the setup of the axis of the pianoroll plots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ax</strong> (<em>matplotlib.axes</em>) – Axis.</p></li>
+<li><p><strong>axis</strong> (<em>str</em>) – Change axis between <code class="docutils literal notranslate"><span class="pre">time</span></code> to plot time in seconds in the x axis
+or <code class="docutils literal notranslate"><span class="pre">bar</span></code> to plot the bars.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="midiplot.midiprocessing.Pianoroll.subplot_pianoroll">
+<code class="sig-name descname">subplot_pianoroll</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">plot_title</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.midiprocessing.Pianoroll.subplot_pianoroll" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function plots the pinoroll of single tracks in different
+subplots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*args</strong> (<em>tuples of</em><em> [</em><em>np.ndarray</em><em>, </em><em>np.ndarray</em><em>, </em><em>np.ndarray</em><em>]</em>) – Tuples of pitch, onsets and offsets times in seconds.</p></li>
+<li><p><strong>plot_title</strong> (<em>str</em>) – Writes a title in the pianoroll plot. Default <code class="docutils literal notranslate"><span class="pre">''</span></code> no title.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="midiplot.midiprocessing.Pianoroll.track_loop">
+<code class="sig-name descname">track_loop</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">notes_tuple</span></em>, <em class="sig-param"><span class="n">ax</span></em>, <em class="sig-param"><span class="n">COLOR</span></em>, <em class="sig-param"><span class="n">COLOR_EDGES</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">'time'</span></em>, <em class="sig-param"><span class="n">time_1_bar</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.midiprocessing.Pianoroll.track_loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is the loop which plots the the pianoroll of a track.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>notes_tuple</strong> (<em>tuple of</em><em> [</em><em>np.ndarray</em><em>, </em><em>np.ndarray</em><em>, </em><em>np.ndarray</em><em>]</em>) – Tuple of pitch, onsets and offsets times in seconds.</p></li>
+<li><p><strong>ax</strong> (<em>matplotlib.axes</em>) – Axis.</p></li>
+<li><p><strong>COLOR</strong> (<em>list</em>) – Predefined list of colors to plot notes on the pianorolls.</p></li>
+<li><p><strong>COLOR_EDGES</strong> (<em>list</em>) – Predefined list of colors to plot notes borders on the pianorolls.</p></li>
+<li><p><strong>axis</strong> (<em>str</em>) – Change axis between <code class="docutils literal notranslate"><span class="pre">time</span></code> to plot time in seconds in the x axis
+or <code class="docutils literal notranslate"><span class="pre">bar</span></code> to plot the bars.</p></li>
+<li><p><strong>time_1_bar</strong> (<em>float</em>) – Time duration of 1 bar. Default <code class="docutils literal notranslate"><span class="pre">None</span></code> so it will be calculated
+in <code class="docutils literal notranslate"><span class="pre">plot</span></code> functions.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="midiplot.midiprocessing.lists_to_tuple">
+<code class="sig-prename descclassname">midiplot.midiprocessing.</code><code class="sig-name descname">lists_to_tuple</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pitch_list</span></em>, <em class="sig-param"><span class="n">note_on_list</span></em>, <em class="sig-param"><span class="n">note_off_list</span></em><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.midiprocessing.lists_to_tuple" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns a tuple of 3 numpy arrays in a variable taking
+as inputs the pitch, note on and note off lists.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pitch_list</strong> (<em>list</em>) – List of Pitches.</p></li>
+<li><p><strong>note_on_list</strong> (<em>list</em>) – Note on event (or onset) in seconds for the pitches in pitch_list.</p></li>
+<li><p><strong>note_off_list</strong> (<em>list</em>) – Note off event (or offset) in seconds for the pitches in pitch_list.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>notes_tuple</strong> – Tuple of pitch, onsets and offsets times in seconds.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple of [np.ndarray, np.ndarray, np.ndarray]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="midiplot.midiprocessing.note_sequence_to_tuple">
+<code class="sig-prename descclassname">midiplot.midiprocessing.</code><code class="sig-name descname">note_sequence_to_tuple</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">note_sequence</span></em><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.midiprocessing.note_sequence_to_tuple" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function converts a note sequence in a tuple of [pitch, note on,
+note off].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>note_sequence</strong> (<em>list</em>) – Note sequence containing the pitch, note on, note off, velocity and the
+instrument of a track.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>notes_tuple</strong> – Tuple of pitch, onsets and offsets times in seconds.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple of [np.ndarray, np.ndarray, np.ndarray]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="midiplot.midiprocessing.savemiditrack">
+<code class="sig-prename descclassname">midiplot.midiprocessing.</code><code class="sig-name descname">savemiditrack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">track</span></em>, <em class="sig-param"><span class="n">out_path</span></em>, <em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.midiprocessing.savemiditrack" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function writes a MIDI file in disk given a track, the output
+directory to save the MIDI file and the name of the MIDI file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>track</strong> (<em>pretty_midi.pretty_midi.PrettyMIDI</em><em>]</em>) – MIDI track of the tuple with pitch, note on and note off arrays.</p></li>
+<li><p><strong>out_path</strong> (<em>str</em>) – Output directory where the MIDI file willl be stored</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the output MIDI file.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="midiplot.midiprocessing.writemidtrack">
+<code class="sig-prename descclassname">midiplot.midiprocessing.</code><code class="sig-name descname">writemidtrack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">notes_tuple</span></em><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.midiprocessing.writemidtrack" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns a MIDI track given a notes_tuple containing the
+pitch, the note on and note off events in seconds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>notes_tuple</strong> (<em>tuple of</em><em> [</em><em>np.ndarray</em><em>, </em><em>np.ndarray</em><em>, </em><em>np.ndarray</em><em>]</em>) – Tuple of pitch, onsets and offsets times in seconds.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>track</strong> – MIDI track of the tuple with pitch, note on and note off arrays.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pretty_midi.pretty_midi.PrettyMIDI</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-midiplot">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-midiplot" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">midipianorolls</span></code> contains utility function/classes for handling MIDI data.
+If you end up using <code class="docutils literal notranslate"><span class="pre">midipianorolls</span></code> in a published research project, please
+cite the following report:</p>
+<p>Example usage for extracting MIDI data and plotting:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">midipianorolls</span>
+<span class="c1"># Load MIDI file into MidiProcessing object</span>
+<span class="n">midi</span> <span class="o">=</span> <span class="n">midipianorolls</span><span class="o">.</span><span class="n">MidiProcessing</span><span class="p">(</span><span class="s1">&#39;midi.mid&#39;</span><span class="p">)</span>
+<span class="c1"># Print tracks of the MIDI file</span>
+<span class="n">midi</span><span class="o">.</span><span class="n">print_tracks</span><span class="p">()</span>
+<span class="c1"># Get the notes_tuple a single track by its program number:</span>
+<span class="n">tuple1</span> <span class="o">=</span> <span class="n">midi</span><span class="o">.</span><span class="n">get_notestuple_of_singletrack_by_nprogram</span><span class="p">(</span><span class="n">program_number</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+<span class="c1"># Get the notes_tuple a single track by its track name:</span>
+<span class="n">tuple2</span> <span class="o">=</span> <span class="n">midi</span><span class="o">.</span><span class="n">get_notestuple_of_singletrack_by_name</span><span class="p">(</span><span class="n">track_name</span><span class="o">=</span><span class="s1">&#39;drums&#39;</span><span class="p">)</span>
+<span class="c1"># Plot the pianoroll of one tuple:</span>
+<span class="n">midipianorolls</span><span class="o">.</span><span class="n">Pianoroll</span><span class="o">.</span><span class="n">plot_singletrack_pianoroll</span><span class="p">(</span><span class="n">tuple1</span><span class="p">)</span>
+<span class="c1"># Plot the pianoroll of both tuples overlapped:</span>
+<span class="n">midipianorolls</span><span class="o">.</span><span class="n">Pianoroll</span><span class="o">.</span><span class="n">overlap_multitrack_pianorolls</span><span class="p">(</span><span class="n">tuple1</span><span class="p">,</span> <span class="n">tuple2</span><span class="p">)</span>
+<span class="c1"># Plot the pianoroll of both tuples in different subplots:</span>
+<span class="n">midipianorolls</span><span class="o">.</span><span class="n">Pianoroll</span><span class="o">.</span><span class="n">subplot_pianoroll</span><span class="p">(</span><span class="n">tuple1</span><span class="p">,</span> <span class="n">tuple2</span><span class="p">)</span>
+<span class="c1"># Cut the MIDI track by setting the starting and ending bars values:</span>
+<span class="n">cut_tuple</span> <span class="o">=</span> <span class="n">midipianorolls</span><span class="o">.</span><span class="n">cut_midi_bars</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">tuple_notes</span><span class="o">=</span><span class="n">tuple1</span><span class="p">)</span>
+<span class="c1"># Write a MIDI track from the tuple:</span>
+<span class="n">midipianorolls</span><span class="o">.</span><span class="n">writemidtrack</span><span class="p">(</span><span class="n">cut_tuple</span><span class="p">)</span>
+<span class="c1"># Save the MIDI track in disk:</span>
+<span class="n">midipianorolls</span><span class="o">.</span><span class="n">savemiditrack</span><span class="p">(</span><span class="n">cut_tuple</span><span class="p">,</span> <span class="s1">&#39;your/output/path&#39;</span><span class="p">,</span> <span class="s1">&#39;track_midi_name&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Tutorials can be found in the source tree’s <a class="reference external" href="https://github.com/carlosholivan/midi-pianorolls/tree/master/tutorials">examples directory</a>.</p>
+<div class="section" id="midipianorolls-midiprocessing">
+<h3><code class="docutils literal notranslate"><span class="pre">midipianorolls.MidiProcessing</span></code><a class="headerlink" href="#midipianorolls-midiprocessing" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="midiplot.MidiProcessing">
+<em class="property">class </em><code class="sig-prename descclassname">midiplot.</code><code class="sig-name descname">MidiProcessing</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">midi_path</span></em><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.MidiProcessing" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class presents some functions to process and extract data from a
+MIDI file with <code class="docutils literal notranslate"><span class="pre">pretty_midi</span></code> library.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>midi_path</strong> (<em>str</em><em> or </em><em>file</em>) – Path or file pointer to a MIDI file.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="midiplot.MidiProcessing.midi_file">
+<code class="sig-name descname">midi_file</code><a class="headerlink" href="#midiplot.MidiProcessing.midi_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pretty MIDI attribute</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>pretty_midi.pretty_midi.PrettyMIDI</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">midiplot</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">midi</span> <span class="o">=</span> <span class="n">midiplot</span><span class="o">.</span><span class="n">MidiProcessing</span><span class="p">(</span><span class="s1">&#39;midi.mid&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">midi</span><span class="o">.</span><span class="n">print_tracks</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">tuple</span> <span class="o">=</span> <span class="n">midi</span><span class="o">.</span><span class="n">get_notestuple_of_singletrack_by_nprogram</span><span class="p">(</span><span class="n">program_number</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tuple2</span> <span class="o">=</span> <span class="n">midi</span><span class="o">.</span><span class="n">get_notestuple_of_singletrack_by_name</span><span class="p">(</span><span class="n">track_name</span><span class="o">=</span><span class="s1">&#39;drums&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt id="midiplot.MidiProcessing.cut_initial_silence">
+<code class="sig-name descname">cut_initial_silence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tuple_notes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">select_track_by</span><span class="o">=</span><span class="default_value">'track_name'</span></em>, <em class="sig-param"><span class="n">track_n</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">program_name</span><span class="o">=</span><span class="default_value">'drums'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.MidiProcessing.cut_initial_silence" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function cuts the initial silence of a track. The initial
+silence is the silence between time 0 and the first note of the MIDI
+file taking into account all the MIDI tracks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tuple_notes</strong> (<em>tuple of</em><em> [</em><em>np.ndarray</em><em>, </em><em>np.ndarray</em><em>, </em><em>np.ndarray</em><em>]</em>) – Tuple of pitch, onsets and offsets times in seconds.
+If we have a tuple_notes we can cut it even if it does not belong
+to the input MIDI file. Default <code class="docutils literal notranslate"><span class="pre">None</span></code> which means that a track
+of the MIDI file will be selected to be cut.</p></li>
+<li><p><strong>select_track_by</strong> (<em>str</em>) – <code class="docutils literal notranslate"><span class="pre">track_name</span></code> selects the track by its name.
+<code class="docutils literal notranslate"><span class="pre">program_number</span></code> selects the track by its program number.</p></li>
+<li><p><strong>track_n</strong> (<em>int</em>) – Numer of the track to cut if select_track_by = <code class="docutils literal notranslate"><span class="pre">program_number</span></code>.</p></li>
+<li><p><strong>program_name</strong> (<em>str</em>) – Name of the track to cut if select_track_by = <code class="docutils literal notranslate"><span class="pre">track_name</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>tuples</strong> – Tuple of pitch, onsets and offsets times in seconds.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple of [np.ndarray, np.ndarray, np.ndarray]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="midiplot.MidiProcessing.cut_midi_bars">
+<code class="sig-name descname">cut_midi_bars</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">start_bar</span></em>, <em class="sig-param"><span class="n">end_bar</span></em>, <em class="sig-param"><span class="n">bpm</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tuple_notes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">select_track_by</span><span class="o">=</span><span class="default_value">'track_name'</span></em>, <em class="sig-param"><span class="n">track_n</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">program_name</span><span class="o">=</span><span class="default_value">'drums'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.MidiProcessing.cut_midi_bars" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function cuts the duration of a track by selecting the
+starting bar and the ending bar. The MIDI file is not quantized so
+the bars values will vary between this bar values and a DAW.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_bar</strong> (<em>int</em>) – Desired starting bar.</p></li>
+<li><p><strong>end_bar</strong> (<em>int</em>) – Desired ending bar.</p></li>
+<li><p><strong>bpm</strong> (<em>int</em><em> or </em><em>float</em>) – Beats per minute. Default <code class="docutils literal notranslate"><span class="pre">120</span></code>.</p></li>
+<li><p><strong>tuple_notes</strong> (<em>tuple of</em><em> [</em><em>np.ndarray</em><em>, </em><em>np.ndarray</em><em>, </em><em>np.ndarray</em><em>]</em>) – Tuple of pitch, onsets and offsets times in seconds.
+If we have a tuple_notes we can cut it even if it does not belong
+to the input MIDI file. Default <code class="docutils literal notranslate"><span class="pre">None</span></code> which means that a track
+of the MIDI file will be selected to be cut.</p></li>
+<li><p><strong>select_track_by</strong> (<em>str</em>) – <code class="docutils literal notranslate"><span class="pre">track_name</span></code> selects the track by its name.
+<code class="docutils literal notranslate"><span class="pre">program_number</span></code> selects the track by its program number.</p></li>
+<li><p><strong>track_n</strong> (<em>int</em>) – Numer of the track to cut if select_track_by = <code class="docutils literal notranslate"><span class="pre">program_number</span></code>.</p></li>
+<li><p><strong>program_name</strong> (<em>str</em>) – Name of the track to cut if select_track_by = <code class="docutils literal notranslate"><span class="pre">track_name</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>tuples</strong> – Tuple of pitch, onsets and offsets times in seconds.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple of [np.ndarray, np.ndarray, np.ndarray]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="midiplot.MidiProcessing.estimate_bpm">
+<code class="sig-name descname">estimate_bpm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">print_bpm</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.MidiProcessing.estimate_bpm" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns the bpm estimation of a MIDI file using
+<code class="docutils literal notranslate"><span class="pre">pretty_midi</span></code> library.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>print_bpm</strong> (<em>bool</em>) – Prints the bpm value.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>bpm</strong> – Estimated bpm of the input MIDI file.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="midiplot.MidiProcessing.get_all_tracks">
+<code class="sig-name descname">get_all_tracks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.MidiProcessing.get_all_tracks" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function …</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>track_name</strong> (<em>np.ndarray</em>) – Name of the track.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>data</strong> – name, program number and notes tuple of all tracks in the MIDI file.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="midiplot.MidiProcessing.get_bars">
+<code class="sig-name descname">get_bars</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bpm</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">bar</span><span class="o">=</span><span class="default_value">'4/4'</span></em>, <em class="sig-param"><span class="n">print_n_bars</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.MidiProcessing.get_bars" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function calculates the total number of bars of the MIDI file
+with the total duration of the MIDI file, the bpm and the bar measure.
+The MIDI file is not quantized so the number of bars will vary between
+this bar values and a DAW.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bpm</strong> (<em>int</em><em> or </em><em>float</em>) – Beats per minute. Default <code class="docutils literal notranslate"><span class="pre">120</span></code>.</p></li>
+<li><p><strong>bar</strong> (<em>str</em>) – Bar measure <code class="docutils literal notranslate"><span class="pre">2/4</span></code>, <code class="docutils literal notranslate"><span class="pre">3/4</span></code> or <code class="docutils literal notranslate"><span class="pre">4/4</span></code>. Default <code class="docutils literal notranslate"><span class="pre">4/4</span></code>.</p></li>
+<li><p><strong>print_n_bars</strong> (<em>bool</em>) – print_time_per_bar = <code class="docutils literal notranslate"><span class="pre">True</span></code> prints the value of the number of
+bars.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>n_bars</strong> – Total number of bars.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="midiplot.MidiProcessing.get_duration">
+<code class="sig-name descname">get_duration</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">print_duration</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.MidiProcessing.get_duration" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns the duration of the MIDI file using
+<code class="docutils literal notranslate"><span class="pre">pretty_midi</span></code> library.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>print_duration</strong> (<em>bool</em>) – Prints the duration value in seconds.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>duration</strong> – Duration in seconds of the input MIDI file.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="midiplot.MidiProcessing.get_notestuple_of_singletrack_by_name">
+<code class="sig-name descname">get_notestuple_of_singletrack_by_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">track_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.MidiProcessing.get_notestuple_of_singletrack_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns the tuple_notes of a single track by passing
+to it the name of the track.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>track_name</strong> (<em>np.ndarray</em>) – Name of the track.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>notes_tuple</strong> – Tuple of pitch, onsets and offsets times in seconds.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple of [np.ndarray, np.ndarray, np.ndarray]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="midiplot.MidiProcessing.get_notestuple_of_singletrack_by_nprogram">
+<code class="sig-name descname">get_notestuple_of_singletrack_by_nprogram</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program_number</span></em><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.MidiProcessing.get_notestuple_of_singletrack_by_nprogram" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns the tuple_notes of a single track by passing
+to it the program number.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>program_number</strong> (<em>int</em>) – Program number of the track.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>notes_tuple</strong> – Tuple of pitch, onsets and offsets times in seconds.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple of [np.ndarray, np.ndarray, np.ndarray]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="midiplot.MidiProcessing.get_tracks">
+<code class="sig-name descname">get_tracks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.MidiProcessing.get_tracks" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function stores the MIDI tracks in a tuple of
+[track, program number, name, is_drum, notes_list].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>n_track_list</strong> (<em>list of ints</em>) – Numer of track in the MIDI file.</p></li>
+<li><p><strong>nprogram_list</strong> (<em>list of ints</em>) – Numbers of the MIDI programs for each instrument.</p></li>
+<li><p><strong>name_list</strong> (<em>list of strs</em>) – Names of the MIDI tracks.</p></li>
+<li><p><strong>isdrum_list</strong> (<em>list of bools</em>) – Is the instrument a drum instrument (channel 9)?</p></li>
+<li><p><strong>notes_list</strong> (<em>tuple of [np.ndarray, np.ndarray, np.ndarray]</em>) – Tuple of pitch, onsets and offsets times in seconds.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="midiplot.MidiProcessing.print_tracks">
+<code class="sig-name descname">print_tracks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.MidiProcessing.print_tracks" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function prints the track number, program number, track name
+and is_drum.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="utility-functions">
+<h3>Utility functions<a class="headerlink" href="#utility-functions" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="midiplot.writemidtrack">
+<code class="sig-prename descclassname">midiplot.</code><code class="sig-name descname">writemidtrack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">notes_tuple</span></em><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.writemidtrack" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns a MIDI track given a notes_tuple containing the
+pitch, the note on and note off events in seconds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>notes_tuple</strong> (<em>tuple of</em><em> [</em><em>np.ndarray</em><em>, </em><em>np.ndarray</em><em>, </em><em>np.ndarray</em><em>]</em>) – Tuple of pitch, onsets and offsets times in seconds.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>track</strong> – MIDI track of the tuple with pitch, note on and note off arrays.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pretty_midi.pretty_midi.PrettyMIDI</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="midiplot.savemiditrack">
+<code class="sig-prename descclassname">midiplot.</code><code class="sig-name descname">savemiditrack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">track</span></em>, <em class="sig-param"><span class="n">out_path</span></em>, <em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#midiplot.savemiditrack" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function writes a MIDI file in disk given a track, the output
+directory to save the MIDI file and the name of the MIDI file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>track</strong> (<em>pretty_midi.pretty_midi.PrettyMIDI</em><em>]</em>) – MIDI track of the tuple with pitch, note on and note off arrays.</p></li>
+<li><p><strong>out_path</strong> (<em>str</em>) – Output directory where the MIDI file willl be stored</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the output MIDI file.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">midiplot package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-midiplot.midiprocessing">midiplot.midiprocessing module</a></li>
+<li><a class="reference internal" href="#module-midiplot">Module contents</a><ul>
+<li><a class="reference internal" href="#midipianorolls-midiprocessing"><code class="docutils literal notranslate"><span class="pre">midipianorolls.MidiProcessing</span></code></a></li>
+<li><a class="reference internal" href="#utility-functions">Utility functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/midiplot.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">midiplot beta.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">midiplot package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Carlos Hernandez-Olivan.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+  </body>
+</html>
