@@ -16,11 +16,14 @@ m_gt = midiprocessing.MidiProcessing(midi_infile)
 all_tracks = m_gt.get_tracks()
 m_gt.print_tracks()
 
-track = m_gt.get_notestuple_of_singletrack_by_name("11_33_PAD")
-data = m_gt.get_all_tracks()
+track = m_gt.get_singletrack_by_name("09_XX_BASS")
 
 plots = midiprocessing.Pianoroll()
-plots.plot_all_tracks(data)
+for i in range(6):
+    track = m_gt.get_singletrack_by_ntrack(i)
+    plots.plot_singletrack_pianoroll(track, axis='bar', plot_title="Track n. {}".format(i))
+    
+plots.plot_all_tracks(all_tracks, axis='bar')
 
 #plots.plot_singletrack_pianoroll(track)
 

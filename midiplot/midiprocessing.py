@@ -5,6 +5,7 @@ This file provides MIDI handling tools.
 """
 
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 from matplotlib.ticker import MultipleLocator
 import numpy as np
 import pretty_midi
@@ -65,26 +66,35 @@ class MidiProcessing:
             Tuple of pitch, onsets and offsets times in seconds.
         """
         
-        n_track_list = []
-        nprogram_list = []
-        name_list = []
-        isdrum_list = []
-        notes_list = []
+        tracks = {}
         
         for i in range(len(self.midi_file.instruments)):
-            nprogram = self.midi_file.instruments[i].program
-            name = self.midi_file.instruments[i].name
-            isdrum = self.midi_file.instruments[i].is_drum
-            notes = self.get_notestuple_of_singletrack_by_name(name)
-            
-            n_track_list.append(i)
-            nprogram_list.append(nprogram)
-            name_list.append(name)
-            isdrum_list.append(isdrum)
-            notes_list.append(notes)
+            note_on_list = []
+            note_off_list = []
+            pitch_list = []
+            velocity_list = []
+            for note in self.midi_file.instruments[i].notes:
+                pitch_list.append(note.pitch)
+                note_on_list.append(note.start)
+                note_off_list.append(note.end)
+                velocity_list.append(note.velocity)
                 
-        return (n_track_list, nprogram_list, name_list, isdrum_list, notes_list)
-    
+            track = { i: {
+                            "n_track"       :   i,
+                            "n_program"     :   int(self.midi_file.instruments[i].program),
+                            "track_name"    :   self.midi_file.instruments[i].name,
+                            "is_drum"       :   self.midi_file.instruments[i].is_drum,
+                            "pitch"         :   pitch_list,
+                            "note_on"       :   note_on_list,
+                            "note_off"      :   note_off_list,
+                            "velocity"      :   velocity_list
+                        }
+                    }
+                
+            tracks = {**tracks, **track}
+            
+        return tracks
+ 
     
     def print_tracks(self):
         
@@ -92,13 +102,13 @@ class MidiProcessing:
         and is_drum.
         """
         
-        lists_tuple = self.get_tracks()
+        tracks = self.get_tracks()
         
-        for i, it in enumerate(lists_tuple[0]):
+        for i in tracks:
             print('Track no:', i, 
-                  '| Program no:', lists_tuple[1][i], 
-                  '| Track name:', lists_tuple[2][i], 
-                  '| is drum:', lists_tuple[3][i])
+                  '| Program no:', tracks[i]["n_program"], 
+                  '| Track name:', tracks[i]["track_name"], 
+                  '| is drum:', tracks[i]["is_drum"])
             
         return
     
@@ -379,7 +389,7 @@ class MidiProcessing:
         return tuples
   
  
-    def get_notestuple_of_singletrack_by_name(self, track_name):
+    def get_singletrack_by_name(self, track_name):
     
         """This function returns the tuple_notes of a single track by passing
         to it the name of the track.
@@ -395,34 +405,47 @@ class MidiProcessing:
             Tuple of pitch, onsets and offsets times in seconds.       
         """
         
-        names = []
-        for i in range(len(self.midi_file.instruments)):
-            names.append(self.midi_file.instruments[i].name)
-            
+        all_tracks = self.get_tracks()
         
-        if any(name == track_name for name in names) == False:
-            raise ValueError('Program name inserted is not in the MIDI file')
-            
+        if not any([track_name == all_tracks[i]["track_name"] for i in all_tracks]):
+            raise ValueError("The introduced track name {} is not in the MIDI file".format(track_name))
         else:
-            for i in range(len(self.midi_file.instruments)):
-                if self.midi_file.instruments[i].name  == track_name:
-                    index = i
-                    
-            note_on_list = []
-            note_off_list = []
-            pitch_list = []
-            for note in self.midi_file.instruments[index].notes:
-                pitch_list.append(note.pitch)
-                note_on_list.append(note.start)
-                note_off_list.append(note.end)
-                
-            notes_tuple = lists_to_tuple(pitch_list, note_on_list, note_off_list)
-            
-            return notes_tuple
-            
+            for i in all_tracks:
+                if all_tracks[i]["track_name"] == track_name:
+                    track = all_tracks[i]
+          
+        return track
     
     
-    def get_notestuple_of_singletrack_by_nprogram(self, program_number):
+    def get_singletrack_by_ntrack(self, track_number):
+    
+        """This function returns the tuple_notes of a single track by passing
+        to it the name of the track.
+        
+        Parameters
+        ----------         
+        track_name : np.ndarray
+            Name of the track.                    
+                       
+        Returns
+        -------
+        notes_tuple : tuple of [np.ndarray, np.ndarray, np.ndarray]
+            Tuple of pitch, onsets and offsets times in seconds.       
+        """
+        
+        all_tracks = self.get_tracks()
+        
+        if not any([track_number == all_tracks[i]["n_track"] for i in all_tracks]):
+            raise ValueError("The introduced track number {} is not in the MIDI file".format(track_number))
+        else:
+            for i in all_tracks:
+                if all_tracks[i]["n_track"] == track_number:
+                    track = all_tracks[i]
+          
+        return track
+            
+    
+    def get_singletrack_by_nprogram(self, program_number):
     
         """This function returns the tuple_notes of a single track by passing
         to it the program number.
@@ -437,54 +460,18 @@ class MidiProcessing:
         notes_tuple : tuple of [np.ndarray, np.ndarray, np.ndarray]
             Tuple of pitch, onsets and offsets times in seconds.       
         """
-            
-        for i in range(len(self.midi_file.instruments)):
-            if self.midi_file.instruments[i].program  == program_number:
-                index = i
-                
-        note_on_list = []
-        note_off_list = []
-        pitch_list = []
-        for note in self.midi_file.instruments[index].notes:
-            pitch_list.append(note.pitch)
-            note_on_list.append(note.start)
-            note_off_list.append(note.end)
+ 
+        all_tracks = self.get_tracks()
         
-        notes_tuple = lists_to_tuple(pitch_list, note_on_list, note_off_list)
-            
-        return notes_tuple
-    
-    
-    def get_all_tracks(self):
-    
-        """This function ...
-        
-        Parameters
-        ----------         
-        track_name : np.ndarray
-            Name of the track.                    
-                       
-        Returns
-        -------
-        data : dict
-            name, program number and notes tuple of all tracks in the MIDI file.  
-        """
-        
-        data_prev = {}
-        for i in range(len(self.midi_file.instruments)):
-            
-            data = {
-                    i :
-                            {
-                            "instrument"    :   self.midi_file.instruments[i].name,
-                            "n_program"     :   self.midi_file.instruments[i].program,
-                            "notes"         :   self.get_notestuple_of_singletrack_by_nprogram(self.midi_file.instruments[i].program)
-                            }
-                    }
-            
-            data_prev = {**data_prev, **data}
-   
-        return data_prev
+        if not any([program_number == all_tracks[i]["n_program"] for i in all_tracks]):
+            raise ValueError("The introduced program number {} is not in the MIDI file".format(program_number))
+        else:
+            for i in all_tracks:
+                if all_tracks[i]["n_program"] == program_number:
+                    track = all_tracks[i]
+          
+        return track
+
     
     """
     def combine_tracks(self, *args):
@@ -561,7 +548,7 @@ class Pianoroll:
         return self
     
 
-    def track_loop(self, notes_tuple, ax, COLOR, COLOR_EDGES, 
+    def track_loop(self, track, ax, COLOR, COLOR_EDGES, 
                    axis='time', time_1_bar=None):
     
         """This function is the loop which plots the the pianoroll of a track.
@@ -583,43 +570,29 @@ class Pianoroll:
             Time duration of 1 bar. Default ``None`` so it will be calculated
             in ``plot`` functions.
         """
-        
-        if axis == 'time':
-            
-            for p, pitch in enumerate(notes_tuple[0]):
-                            
-                plt.vlines(x = notes_tuple[1][p], 
-                           ymin = pitch, 
-                           ymax = pitch+1,
-                           color=COLOR_EDGES, 
-                           linewidth=0.01)
-                               
-                ax.add_patch(plt.Rectangle((notes_tuple[1][p], pitch), 
-                                            width = notes_tuple[2][p] - notes_tuple[1][p],
-                                            height = 1,
-                                            alpha = 0.5,
-                                            edgecolor = COLOR_EDGES,
-                                            facecolor = COLOR))
                 
-        elif axis == 'bar':
-            
-            for p, pitch in enumerate(notes_tuple[0]):
-                            
-                plt.vlines(x = notes_tuple[1][p] / time_1_bar, 
-                           ymin = pitch, 
-                           ymax = pitch+1,
-                           color=COLOR_EDGES, 
-                           linewidth=0.01)
-                               
-                ax.add_patch(plt.Rectangle((notes_tuple[1][p] / time_1_bar, pitch), 
-                                            width = (notes_tuple[2][p] - notes_tuple[1][p])  / time_1_bar,
-                                            height = 1,
-                                            alpha = 0.5,
-                                            edgecolor = COLOR_EDGES,
-                                            facecolor = COLOR))
+        for i in range(len(track["note_on"])):
+            if axis == 'time':
+                x = track["note_on"][i]
+            elif axis == 'bar':
+                x = track["note_on"][i] / time_1_bar
+                   
+            plt.vlines(x = x, 
+                       ymin = track["pitch"][i], 
+                       ymax = track["pitch"][i]+1,
+                       color=COLOR_EDGES, 
+                       linewidth=0.01,
+                       label=track["track_name"])
+                           
+            ax.add_patch(plt.Rectangle((x, track["pitch"][i]), 
+                                        width = track["note_off"][i] - track["note_on"][i],
+                                        height = 1,
+                                        alpha = 0.5,
+                                        edgecolor = COLOR_EDGES,
+                                        facecolor = COLOR))
+                
     
-    
-    def plot_singletrack_pianoroll(self, notes_tuple, bpm=120, 
+    def plot_singletrack_pianoroll(self, track, bpm=120, 
                                    axis='time', bar='4/4', plot_title=''):
                 
         """This function plots a pianoroll of a single track.
@@ -647,10 +620,11 @@ class Pianoroll:
         if axis == 'time':
             self.setup(ax, axis)
         
-            self.track_loop(notes_tuple, ax, COLOR[0], COLOR_EDGES[0])
+            self.track_loop(track, ax, COLOR[0], COLOR_EDGES[0])
             
         elif axis == 'bar':
-            duration = notes_tuple[2][-1]
+            # TODO fix this bc plot is not the same as plotting separately
+            duration = track["note_off"][-1]
             n_bars = duration*60 / (int(bar[0])*bpm)
             time_1_bar = (60 / bpm) * int(bar[0])
              
@@ -659,7 +633,7 @@ class Pianoroll:
             yint = np.arange(0, round(n_bars), 1)
             plt.yticks(yint)
         
-            self.track_loop(notes_tuple, ax, COLOR[0], COLOR_EDGES[0], 
+            self.track_loop(track, ax, COLOR[track["n_track"]], COLOR_EDGES[track["n_track"]], 
                             axis=axis, time_1_bar = time_1_bar)
             
     
@@ -688,18 +662,38 @@ class Pianoroll:
         self.setup(ax)
     
     
-    def plot_all_tracks(self, tracks_dict, axis='time', time_1_bar=None, bar='4/4', plot_title=''):
+    def plot_all_tracks(self, all_tracks, bpm=120, axis='time', time_1_bar=None, bar='4/4', plot_title=''):
         
         fig, ax = plt.subplots(figsize=(20, 5))
         
         if plot_title != '':
             plt.title(plot_title)
         
-        for key in tracks_dict.keys():
-            self.track_loop(tracks_dict[key]["notes"], ax, COLOR[key+1], COLOR_EDGES[key+1],
+        if axis == 'bar':
+            max_note_off_list = []
+            for key in all_tracks.keys():
+                max_note_off_list.append(all_tracks[key]["note_off"][-1])
+            
+            duration = max(max_note_off_list)
+            n_bars = duration*60 / (int(bar[0])*bpm)
+            time_1_bar = (60 / bpm) * int(bar[0])
+                         
+            yint = np.arange(0, round(n_bars), 1)
+            plt.yticks(yint)
+            
+        elif axis != bar or axis != 'time':
+            raise ValueError("Introduced axis is not valid.")
+
+        patch_list = []
+        for key in all_tracks.keys():
+            self.track_loop(all_tracks[key], ax, COLOR[key], COLOR_EDGES[key],
                             axis=axis, time_1_bar=time_1_bar)
-        self.setup(ax)
-        
+            
+            patch = mpatches.Patch(color=COLOR[key], label=all_tracks[key]["track_name"])
+            patch_list.append(patch)
+        plt.legend(handles=patch_list, bbox_to_anchor=(1, 1), loc='upper left')
+        self.setup(ax, axis)
+            
         
     def subplot_pianoroll(self, *args, plot_title=''):
     
@@ -723,9 +717,7 @@ class Pianoroll:
             self.track_loop(arg, ax, COLOR[i+1], COLOR_EDGES[i+1])
             
             self.setup(ax)
-
-        return
-    
+            
 
 def writemidtrack(notes_tuple):
         
@@ -779,7 +771,7 @@ def savemiditrack(track, out_path, name):
     return 
 
 
-def lists_to_tuple(pitch_list, note_on_list, note_off_list):
+def lists_to_tuple(pitch_list, note_on_list, note_off_list, velocity_list):
     
     """This function returns a tuple of 3 numpy arrays in a variable taking
     as inputs the pitch, note on and note off lists.
@@ -803,8 +795,9 @@ def lists_to_tuple(pitch_list, note_on_list, note_off_list):
     pitch = np.asarray(pitch_list)
     noteon = np.asarray(note_on_list)
     noteoff = np.asarray(note_off_list)
+    velocity = np.asarray(velocity_list)
         
-    notes_tuple = (pitch, noteon, noteoff)
+    notes_tuple = (pitch, noteon, noteoff, velocity)
         
     return notes_tuple  
     
