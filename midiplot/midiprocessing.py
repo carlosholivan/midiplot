@@ -7,6 +7,8 @@ This file provides MIDI handling tools.
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.ticker import MultipleLocator
+import plotly.express as px
+import plotly.graph_objects as go
 import numpy as np
 import pretty_midi
              
@@ -256,7 +258,7 @@ class MidiProcessing:
             sec_per_bar = bps * int(bar[0])
             n_bars = self.get_duration() / sec_per_bar
            
-            return n_bars
+            return round(n_bars)
         
         else:
         
@@ -547,8 +549,36 @@ class Pianoroll:
                          
         return self
     
+    
+    def setup_html(self, ax, axis='time'):
+        
+        """This function is the setup of the axis of the pianoroll plots.
+        
+        Parameters
+        ----------         
+        ax : matplotlib.axes
+            Axis.  
+        axis : str
+            Change axis between ``time`` to plot time in seconds in the x axis 
+            or ``bar`` to plot the bars.                
+        """
+        
+        if axis == 'time':
+            plt.xlabel('time s')
+        elif axis == 'bar':
+            plt.xlabel('bar')
+        else:
+            raise ValueError('Axis must be time or bar.')
+            
+        ylabel = 'Pitch'
+        ax.yaxis.set_major_locator(MultipleLocator(1))
+        ax.grid(linewidth=0.25)
+        ax.set_facecolor('#282828')
+                         
+        return self
+    
 
-    def track_loop(self, track, ax, COLOR, COLOR_EDGES, 
+    def _track_loop(self, track, ax, COLOR, COLOR_EDGES, 
                    axis='time', time_1_bar=None):
     
         """This function is the loop which plots the the pianoroll of a track.
@@ -590,6 +620,60 @@ class Pianoroll:
                                         alpha = 0.5,
                                         edgecolor = COLOR_EDGES,
                                         facecolor = COLOR))
+          
+    def _track_loop_html(self, track, fig, COLOR, COLOR_EDGES, 
+                        axis='time', time_1_bar=None):
+    
+        """This function is the loop which plots the the pianoroll of a track.
+        
+        Parameters
+        ----------
+        notes_tuple : tuple of [np.ndarray, np.ndarray, np.ndarray]
+            Tuple of pitch, onsets and offsets times in seconds.  
+        ax : matplotlib.axes
+            Axis.
+        COLOR : list
+            Predefined list of colors to plot notes on the pianorolls. 
+        COLOR_EDGES : list
+            Predefined list of colors to plot notes borders on the pianorolls.
+        axis : str
+            Change axis between ``time`` to plot time in seconds in the x axis 
+            or ``bar`` to plot the bars.   
+        time_1_bar : float
+            Time duration of 1 bar. Default ``None`` so it will be calculated
+            in ``plot`` functions.
+        """
+                
+        for i in range(len(track["note_on"])):
+            if axis == 'time':
+                x = track["note_on"][i]
+            elif axis == 'bar':
+                x = track["note_on"][i] / time_1_bar
+
+            
+            fig.add_shape(type="rect",
+                          x0=x,
+                          y0=track["pitch"][i],
+                          x1=track["note_off"][i],
+                          y1=track["pitch"][i]+1,
+                          line=dict(
+                                color=COLOR_EDGES,
+                                width=2,
+                            ),
+                          fillcolor=COLOR,
+                          name=track["track_name"])
+            
+            fig.add_trace(
+                    go.Scatter(
+                        x=[x,x,track["note_off"][i],track["note_off"][i],x], 
+                        y=[track["pitch"][i],track["pitch"][i]+1,track["pitch"][i]+1,track["pitch"][i],track["pitch"][i]], 
+                        fill="toself",
+                        mode='lines',
+                        name='',
+                        text='{} {} {} {} {}'.format(track["track_name"],track["n_program"],track["note_on"],track["note_off"],track["pitch"]),
+                        opacity=0
+                        )
+                    )
                 
     
     def plot_singletrack_pianoroll(self, track, bpm=120, 
@@ -620,7 +704,7 @@ class Pianoroll:
         if axis == 'time':
             self.setup(ax, axis)
         
-            self.track_loop(track, ax, COLOR[0], COLOR_EDGES[0])
+            self._track_loop(track, ax, COLOR[0], COLOR_EDGES[0])
             
         elif axis == 'bar':
             # TODO fix this bc plot is not the same as plotting separately
@@ -633,10 +717,9 @@ class Pianoroll:
             yint = np.arange(0, round(n_bars), 1)
             plt.yticks(yint)
         
-            self.track_loop(track, ax, COLOR[track["n_track"]], COLOR_EDGES[track["n_track"]], 
+            self._track_loop(track, ax, COLOR[track["n_track"]], COLOR_EDGES[track["n_track"]], 
                             axis=axis, time_1_bar = time_1_bar)
             
-    
     
     def overlap_multitrack_pianorolls(self, *argv, plot_title=''):
                 
@@ -657,7 +740,7 @@ class Pianoroll:
             plt.title(plot_title)
         
         for i, arg in enumerate(argv):
-            self.track_loop(arg, ax, COLOR[i+1], COLOR_EDGES[i+1])
+            self._track_loop(arg, ax, COLOR[i+1], COLOR_EDGES[i+1])
             
         self.setup(ax)
     
@@ -680,13 +763,16 @@ class Pianoroll:
                          
             yint = np.arange(0, round(n_bars), 1)
             plt.yticks(yint)
-            
-        elif axis != bar or axis != 'time':
+			
+        elif axis == 'time':  
+            # TODO fix this
+            print('')
+        else:
             raise ValueError("Introduced axis is not valid.")
 
         patch_list = []
         for key in all_tracks.keys():
-            self.track_loop(all_tracks[key], ax, COLOR[key], COLOR_EDGES[key],
+            self._track_loop(all_tracks[key], ax, COLOR[key], COLOR_EDGES[key],
                             axis=axis, time_1_bar=time_1_bar)
             
             patch = mpatches.Patch(color=COLOR[key], label=all_tracks[key]["track_name"])
@@ -718,6 +804,115 @@ class Pianoroll:
             
             self.setup(ax)
             
+
+    def plot_singletrack_pianoroll_html(self, track, bpm=120, 
+                                        axis='time', bar='4/4', plot_title='',
+                                        save_html=False, fig_path=None,
+                                        name_fig='plot'):
+                
+        """This function plots a pianoroll of a single track.
+        
+        Parameters
+        ----------
+        notes_tuple : tuple of [np.ndarray, np.ndarray, np.ndarray]
+            Tuple of pitch, onsets and offsets times in seconds.
+        bpm : int or float
+            Beats per minute. Default ``120``.
+        axis : str
+            Change axis between ``time`` to plot time in seconds in the x axis 
+            or ``bar`` to plot the bars.       
+        bar : str
+            Bar measure ``2/4``, ``3/4`` or ``4/4``. Default ``4/4``.
+        plot_title : str
+            Writes a title in the pianoroll plot. Default ``''`` no title.
+        """
+        # TODO fix
+        
+        
+        if plot_title != '':
+            title = plot_title
+        else:
+            title = ''
+            
+        fig = go.Figure(data=go.Scatter(),
+                        layout=go.Layout({"title"      : title,
+                                          "template"   : "plotly_dark",
+                                          "xaxis"      : {'title':axis}, 
+                                          "yaxis"      : {'title':'pitch'},
+                                          })
+                        )
+    
+        if axis == 'time':
+            #self.setup(ax, axis)
+        
+            self._track_loop_html(track, fig, COLOR[0], COLOR_EDGES[0])
+            
+        elif axis == 'bar':
+            # TODO fix this bc plot is not the same as plotting separately
+            duration = track["note_off"][-1]
+            n_bars = duration*60 / (int(bar[0])*bpm)
+            time_1_bar = (60 / bpm) * int(bar[0])
+             
+            #self.setup(ax, axis=axis)
+            
+            yint = np.arange(0, round(n_bars), 1)
+            plt.yticks(yint)
+        
+            self._track_loop_html(track, fig, COLOR[track["n_track"]], COLOR_EDGES[track["n_track"]], 
+                                 axis=axis, time_1_bar = time_1_bar)
+                
+        if save_html:
+            if fig_path is not None:
+                fig.write_html(fig_path + '/' + name_fig + ".html")
+            else:
+                fig.write_html("../" + name_fig + ".html")
+          
+        fig.update_layout(legend={"xanchor":"center", "yanchor":"top"})
+        fig.show()
+       
+        
+    def plot_all_tracks_html(self, all_tracks, bpm=120, axis='time', time_1_bar=None, bar='4/4', plot_title=''):
+        # TODO fix
+        fig = go.Figure()
+        
+        if plot_title != '':
+            title = plot_title
+        else:
+            title = ''
+            
+        fig = go.Figure(data=go.Scatter(),
+                        layout=go.Layout({"title"      : title,
+                                          "template"   : "plotly_dark",
+                                          "xaxis"      : {'title':axis}, 
+                                          "yaxis"      : {'title':'pitch'},
+                                          })
+                        )
+            
+        if axis == 'bar':
+            max_note_off_list = []
+            for key in all_tracks.keys():
+                max_note_off_list.append(all_tracks[key]["note_off"][-1])
+            
+            duration = max(max_note_off_list)
+            n_bars = duration*60 / (int(bar[0])*bpm)
+            time_1_bar = (60 / bpm) * int(bar[0])
+                         
+            yint = np.arange(0, round(n_bars), 1)
+            plt.yticks(yint)
+     
+    
+        #patch_list = []
+        for key in all_tracks.keys():
+            self._track_loop_html(all_tracks[key], fig, COLOR[key], COLOR_EDGES[key],
+                            axis=axis, time_1_bar=time_1_bar)
+            
+            #patch = mpatches.Patch(color=COLOR[key], label=all_tracks[key]["track_name"])
+            #patch_list.append(patch)
+        #plt.legend(handles=patch_list, bbox_to_anchor=(1, 1), loc='upper left')
+        #self.setup_html_plot(fig, axis)
+        fig.update_layout(legend={"xanchor":"center", "yanchor":"top"})
+        fig.show()
+    
 
 def writemidtrack(notes_tuple):
         

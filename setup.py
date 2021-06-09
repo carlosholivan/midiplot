@@ -12,7 +12,7 @@ requirements = read('requirements.txt').splitlines()
 
 setuptools.setup(name='midiplot',
       version='0.0',
-      description='Python mono Wav to MIDI transcription and analysis',
+      description='Python MIDI plotting and analysis',
       url='https://github.com/carlosholivan/midiplot',
       author='Carlos Hernandez Olivan',
       author_email='carloshero@unizar.es',

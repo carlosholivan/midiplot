@@ -59,6 +59,8 @@ plots.plot_all_tracks(all_tracks, axis='time')
 
 * Time axis can be also represented in ``bars``
 
+![](images/pianoroll_bars.png)
+
 ```python
 all_tracks = midi.get_tracks()
 plots.plot_all_tracks(all_tracks, axis='bar')
