@@ -59,16 +59,20 @@ plots.plot_all_tracks(all_tracks, axis='time')
 
 * Time axis can be also represented in ``bars``
 
-![](images/pianoroll_bars.png)
-
 ```python
 all_tracks = midi.get_tracks()
 plots.plot_all_tracks(all_tracks, axis='bar')
 ```
 
+![](images/pianoroll_bars.png)
+
 * HTML plots with ``plotly`` module
 
-    [ ]  TODO
+```python
+plots.plot_all_tracks_html(all_tracks)
+```
+
+![](images/pianoroll_plotly.png)
 
 ## Dependencies
 
@@ -79,10 +83,17 @@ plots.plot_all_tracks(all_tracks, axis='bar')
 
 ## Installation
 
+Pip package:
 ```
-cd .path/to/midiplot
+pip install midiplot
+```
+
+From source:
+```
+cd .path/to/timbre-vae
 python setup.py install
 ```
+
 
 ## License
 
