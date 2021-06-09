@@ -10,17 +10,23 @@ def read(fname):
 
 requirements = read('requirements.txt').splitlines()
 
+classifiers = ['Development Status :: 0 - Beta',
+               'Programming Language :: Python :: 2.7',
+               'Programming Language :: Python :: 3.5',
+               'Programming Language :: Python :: 3.6',
+               'Programming Language :: Python :: 3.7',
+               'License :: Free for non-commercial use',
+               'Topic :: Multimedia :: Sound/Audio :: Analysis']
+			   
 setuptools.setup(name='midiplot',
-      version='0.0',
+      version='0.0-beta',
       description='Python MIDI plotting and analysis',
       url='https://github.com/carlosholivan/midiplot',
       author='Carlos Hernandez Olivan',
       author_email='carloshero@unizar.es',
-      license='Apache License, Version 2.0',
+      license='https://github.com/carlosholivan/midiplot',
       packages=setuptools.find_packages(),
-      classifiers=[
-          "Programming Language :: Python :: 3",
-          "License :: OSI Approved :: Apache Software License v2.0",
-          ],
+	  exclude_package_data={'': ['tests', 'docs']},
       install_requires=requirements,
+	  classifiers=classifiers
       )
